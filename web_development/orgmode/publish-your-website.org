@@ -1,0 +1,70 @@
+#+title: Automated Org Mode Website Publishing with Github
+
+* Getting started
+
+Once you start generating a static website using Org Mode's publishing system, the next thing you'll probably want to know is how to publish the site so that other people can check it out.
+
+To get started, make sure you have an account on [[https://github.com/][github]].
+
+* Creating a hosted repository for website publishing
+
+To publish a website with GitHub Pages, you'll need to create a repository with a specific name:
+
+=yourusername.github.io=
+
+If you know a little about git, you can do that by yourself right now!
+
+* Build a configuration
+
+Now we can set up a build configuration that will automatically publish your website every time you push a commit to its repository!
+
+This is possible by using a "continuous integration" service like [[https://github.com/features/actions][GitHub Actions]]. This type of service enables you to run a build script for your repository on a machine in the cloud so that you can do things like run tests on code or publish a website.
+
+** GitHub Actions
+
+This file should be placed in your repository at =.github/workflows/publish.yml=. Here's what it does:
+
++ Configures the build to trigger on commits to the =master= branch (change branch name if yours is =main=)
++ Sets up an Ubuntu VM to run the build
++ Checks out the code for this repo
++ Install =emacs-nox= (without the graphical interface)
++ Runs our =build.sh= script to build the site
++ Uses a custom action to publish the site to the =gh-pages= branch
+
+#+begin_src yaml
+
+name: Publish to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v1
+
+      - name: Install Emacs
+        run: sudo apt install emacs-nox --yes
+
+      - name: Build the site
+        run: ./build.sh
+
+      - name: Publish generated content to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: public
+
+#+end_src
+
+Add this file to your repository folder, commit it, and push it to your Github repository!
+
+You can watch the progress of the "Publish to GitHub Pages" action from the *Actions* tab on your repository.
+
+*NOTE*: After it completes, the site still won't be publish because we need to take one final step to configure your site! Click the *Settings* tab on your repo, click the *Pages* tab on your left side of the Settings page, then change the Source Branch to =gh-pages= and click *Save*.
+
+After a minute or two you site will now be live!
