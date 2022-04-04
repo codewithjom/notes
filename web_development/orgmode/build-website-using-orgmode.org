@@ -1,7 +1,5 @@
 #+title: Build Your Website with Org Mode
 
-Watch this [[https://www.youtube.com/watch?v=AfkrzFodoNw&t=749s][video]] to learn more!
-
 * Getting stared
 
 To get started, we'll need a place to put all of the code we'll use to generate the site along with the =.org= files that will provide the site's content.
