@@ -151,7 +151,7 @@
 
 #+begin_src sh
 
-  git config --globa; alias.lg "log --oneline"
+  git config --global alias.lg "log --oneline"
 
 #+end_src
 
