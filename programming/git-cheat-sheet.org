@@ -1,0 +1,381 @@
+#+title: Git Cheat Sheet
+#+author: Jom Dollesin
+
+* Creating snapshots
+** Initializing a repository
+
+#+begin_src sh
+
+  git init
+
+#+end_src
+
+** Staging files
+
+#+begin_src sh
+
+  git add file1.txt            # Stages a single file
+  git add file1.txt file2.txt  # Stages a multiple files
+  git add *.txt                # Stages with a pattern
+  git add .                    # Stages the current directory and all its content
+
+#+end_src
+
+** Viewing the status
+
+#+begin_src sh
+
+  git status     # Full status
+  git status -s  # Short status
+
+#+end_src
+
+** Committing the staged files
+
+#+begin_src sh
+
+  git commit -m "Message"  # Commits wiht one-line message
+  git commit               # Opens the default editory to type a long message
+
+#+end_src
+
+** Skipping the staging area
+
+#+begin_src sh
+
+  git commit -am "Message"
+
+#+end_src
+
+** Removing files
+
+#+begin_src sh
+
+  git rm file1.txt           # Removes from working directory and staging area
+  git rm --cached file1.txt  # Removes from staging area only
+
+#+end_src
+
+** Viewing the staged/unstaged changes
+
+#+begin_src sh
+
+  git diff           # Shows unstaged changes
+  git diff --staged  # Shows staged changes
+  git diff --cached  # Same as the above
+
+#+end_src
+
+** Viewing the history
+
+#+begin_src sh
+
+  git log            # Full history
+  git log --oneline  # Summary
+  git log --reverse  # Lists the commits from the oldest to the newest
+
+#+end_src
+
+** Viewing a commit
+
+#+begin_src sh
+
+  git show 921a2ff        # Shows the given commit
+  git show HEAD           # Shows the last commit
+  git show HEAD~2         # Two steps before the last commit
+  git show HEAD:file.txt  # Shows the version of the file.txt stored in the last commit
+
+#+end_src
+
+** Unstaging files (undoing git add)
+
+#+begin_src sh
+
+  git restore --staged file.txt    # Copies the last version of file.txt from repo to index
+
+#+end_src
+
+** Discarding local changes
+
+#+begin_src sh
+
+  git restore file.txt              # Copies file.txt from index to working directory
+  git restore file1.txt file2.txt   # Restores multiple files in working directory
+  git restore .                     # Discards all local changes (except untracked files)
+  git cleam -fd                     # Removes all untracked files
+
+#+end_src
+
+** Restoring an earlier version of a file
+
+#+begin_src sh
+
+  git restore --source=HEAD~2 file.txt
+
+#+end_src
+
+* Browsing history
+** Viewing the history
+
+#+begin_src sh
+
+  git log --stat         # Shows the list of modified files
+  git log --patch        # Shows the actual changes (patches)
+
+#+end_src
+
+** Filtering the history
+
+#+begin_src sh
+
+  git log -3                      # Shows the last 3 entries
+  git log --author="Jom"
+  git log --before="2022-02-22"
+  git log --after="one week ago"
+  git log --grep="GUI"            # Commits with "GUI" in their message
+  git log -S"GUI"                 # Commits with "GUI" in their patches
+  git log hash1..hash2            # Range of commits
+  git log file.txt                # Commits that touched file.txt
+
+#+end_src
+
+** Formatting the log output
+
+#+begin_src sh
+
+  git log --pretty=format:"%an commited %H"
+
+#+end_src
+
+** Creating an alias
+
+#+begin_src sh
+
+  git config --globa; alias.lg "log --oneline"
+
+#+end_src
+
+** Viewing a commit
+
+#+begin_src sh
+
+  git show HEAD~2
+  git show HEAD~2:file1.txt   # Shows the version of file stored in this commit
+
+#+end_src
+
+** Comparing commits
+
+#+begin_src sh
+
+  git diff HEAD~2 HEAD           # Shows the changes between two commits
+  git diff HEAD~2 HEAD file.txt  # Changes to file.txt only
+
+#+end_src
+
+** Checking out a commit
+
+#+begin_src sh
+
+  git checkout dad47ed  # Checks out the given commit
+  git checkout master   # Checks out the master branch
+
+#+end_src
+
+** Finding a bad commit
+
+#+begin_src sh
+
+  git bisect start
+  git bisect bad          # Marks the current commit as bad commit
+  git bisect good ca49180 # Marks the given commit as a good commit
+  git bisect reset        # Terminates the bisect session
+
+#+end_src
+
+** Finding contributors
+
+#+begin_src sh
+
+  git shortlog
+
+#+end_src
+
+** Viewing the history of a file
+
+#+begin_src sh
+
+  git log file.txt          # Shows the commits that touched file.txt
+  git log --stat file.txt   # Shows statistics (the number of changes) for file.txt
+  git log --patch file.txt  # Shows the patches (changes) applied to file.txt
+
+#+end_src
+
+** Finding the author of lines
+
+#+begin_src sh
+
+  git blame file.txt     # Shows the author of each line in file.txt
+
+#+end_src
+
+* Branching and Merging
+** Managing branches
+
+#+begin_src sh
+
+  git branch bugfix     # Creates a new branch called bugfix
+  git checkout bugfix   # Swithes to the bugfix branch
+  git switch bugfix     # Same as the above
+  git switch -C bugfix  # Creates and swithes
+  git branch -d bugfix  # Deletes the bugfix branch
+
+#+end_src
+
+** Comparing branches
+
+#+begin_src sh
+
+  git log master..bugfix    # Lists the commits in the bugfix branch not in master
+  git diff master..bugfix   # Shows the summary of changes
+
+#+end_src
+
+** Stashing
+
+#+begin_src sh
+
+  git stash push -m "New tax rules."  # Creates a new stash
+  git stash list                      # Lists all the stashes
+  git stash show stash@{1}            # Shows the given stash
+  git stash show 1                    # Shortcut for stash@{1}
+  git stash apply 1                   # Applies the given stash to the working dir
+  git stash drop 1                    # Deletes the given stash
+  git stash clear                     # Deletes all the stashes
+
+#+end_src
+
+** Merging
+
+#+begin_src sh
+
+  git merge bugfix               # Merges the bugfix branch into the current branch
+  git merge --no-ff bugfix       # Creates a merge commit even if FF is possible
+  git merge --squash bugfix      # Performs a squash merge
+  git merge --abort              # Aborts the merge
+
+#+end_src
+
+** Viewing the merged branches
+
+#+begin_src sh
+
+  git branch --merged      # Shows the merged branches
+  git branch --no-merged   # Shows the unmerged branches
+
+#+end_src
+
+** Rebasing
+
+#+begin_src sh
+
+  git rebase master     # Changes the base of the current branch
+
+#+end_src
+
+** Cherry picking
+
+#+begin_src sh
+
+  git cherry-pick dad47ed  # Applies the given commit on the current branch
+
+#+end_src
+
+* Collaboration
+** Cloning a repository
+
+#+begin_src sh
+
+  git clone url
+
+#+end_src
+
+** Syncing with remotes
+
+#+begin_src sh
+
+  git fetch origin master     # Fetches master from origin
+  git fetch origin            # Fetches all objects from origin
+  git fetch                   # Shortcut for "git fetch origin"
+  git pull                    # Fetch + merge
+  git push origin master      # Pushes master to origin
+  git push                    # Shortcut for "git push origin master"
+
+#+end_src
+
+** Sharing branches
+
+#+begin_src sh
+
+  git branch -r              # Shows remote tracking branches
+  git branch -vv             # Shows local & remote tracking branches
+  git -u origin bugfix       # Pushes bugfix to origin
+  git push -d origin bugfix  # Removes bugfix from origin
+
+#+end_src
+
+** Managing remotes
+
+#+begin_src sh
+
+  git remote                    # Shows remote repos
+  git remote add upstream url   # Adds a new remote called upstream
+  git remote rm upstream        # Remotes upstream
+
+#+end_src
+
+* Rewriting History
+** Undoing commits
+
+#+begin_src sh
+
+  git reset --soft HEAD^   # Removes the last commit, keeps changed staged
+  git reset --mixed HEAD^  # Unstages the changes as well
+  git reset --hard HEAD^   # Discards local changes
+
+#+end_src
+
+** Reverting commits
+
+#+begin_src sh
+
+  git revert 72856ea    # Reverts the given commit
+  git rever HEAD~3..    # Reverts the last three commits
+  git rever --no-commit HEAD~3..
+
+#+end_src
+
+** Recovering lost commits
+
+#+begin_src sh
+
+  git reflog               # Shows the history of HEAD
+  git reflog show bugfix   # Shows the history of bugfix pointer
+
+#+end_src
+
+** Amending the last commit
+
+#+begin_src sh
+
+  git commit --amend
+
+#+end_src
+
+** Interactive rebasing
+
+#+begin_src sh
+
+  git rebase -i HEAD~5
+
+#+end_src
