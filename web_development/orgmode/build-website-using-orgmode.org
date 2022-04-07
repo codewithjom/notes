@@ -1,6 +1,6 @@
 #+title: Build Your Website with Org Mode
 
-* Getting stared
+* Getting started
 
 To get started, we'll need a place to put all of the code we'll use to generate the site along with the =.org= files that will provide the site's content.
 
